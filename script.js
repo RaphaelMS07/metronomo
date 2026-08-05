@@ -19,6 +19,8 @@ let nextNoteTime = 0.0;
 let timelinePlayCount = 0;
 let timelineLoopLimit = 1;
 
+
+const timelineTitleInput = document.getElementById('timelineTitle'); // NOVA VARIÁVEL
 const lookahead = 25.0;
 const scheduleAheadTime = 0.1;
 
@@ -27,6 +29,7 @@ const scheduleAheadTime = 0.1;
 // --- LÓGICA DE LOCALSTORAGE (SALVAR E CARREGAR) ---
 function saveToLocalStorage() {
     const data = {
+        title: timelineTitleInput.value, // Salva o nome do treino
         globalBpm: parseInt(globalBpmInput.value) || 120,
         loopLimit: parseInt(timelineLoopInput.value) || 0,
         blocks: []
@@ -38,7 +41,7 @@ function saveToLocalStorage() {
             bpm: parseInt(box.querySelector('.bpm-input').value) || 120,
             beatsPerTick: parseInt(box.querySelector('.beats-input').value) || 1,
             limit: parseInt(box.querySelector('.limit-input').value) || 0,
-            color: box.dataset.color // Salva a cor da borda do bloco
+            color: box.dataset.color // Caso esteja usando a mecânica das bordas coloridas
         });
     });
 
@@ -50,20 +53,24 @@ function loadFromLocalStorage() {
     if (savedData) {
         try {
             const data = JSON.parse(savedData);
-
+            
+            // Restaura o título do treino
+            if (data.title !== undefined) {
+                timelineTitleInput.value = data.title;
+            }
+            
             if (data.globalBpm !== undefined) {
                 globalBpmInput.value = data.globalBpm;
             }
             if (data.loopLimit !== undefined) {
                 timelineLoopInput.value = data.loopLimit;
             }
-
+            
             const existingBoxes = timeline.querySelectorAll('.config-box');
             existingBoxes.forEach(box => box.remove());
 
             if (data.blocks && data.blocks.length > 0) {
                 data.blocks.forEach(block => {
-                    // Passa a cor salva como o quarto argumento
                     const newBox = createConfigBox(block.bpm, block.beatsPerTick, block.limit, block.color);
                     timeline.insertBefore(newBox, addBtn);
                 });
@@ -212,6 +219,18 @@ playBtn.addEventListener('click', () => {
         stopMetronome();
     } else {
         startMetronome();
+    }
+
+    if (e.target.id === 'globalBpm') {
+        const newGlobalBpm = e.target.value;
+        const bpmInputs = timeline.querySelectorAll('.bpm-input');
+        bpmInputs.forEach(input => {
+            input.value = newGlobalBpm;
+        });
+        saveToLocalStorage();
+    } 
+    else if (e.target.matches('.bpm-input, .beats-input, .limit-input, #timelineLoop, #timelineTitle')) {
+        saveToLocalStorage();
     }
 });
 

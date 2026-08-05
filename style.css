@@ -34,8 +34,8 @@ h2 {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 15px;
-    margin-bottom: 25px;
+    /* gap: 5px; */
+    /* margin-bottom: 5px; */
 }
 
 .controls {
@@ -187,4 +187,44 @@ footer {
     margin-top: 25px;
     color: #777;
     font-size: 12px;
+}
+
+/* Layout lado a lado para Botão e Timeline */
+.timeline-wrapper {
+    display: flex;
+    align-items: center; /* Alinha o botão de play no meio, caso a timeline cresça */
+    gap: 20px;
+    margin-top: 15px;
+}
+
+/* Garante que a linha do tempo ocupe o resto do espaço e role caso precise */
+.timeline {
+    flex-grow: 1;
+    overflow-x: auto;
+    padding-bottom: 10px; /* Evita que o scrollbar corte a sombra das box */
+}
+
+/* Estilo do título editável (parecido com o antigo <h2>) */
+.timeline-title {
+    background: transparent;
+    border: none;
+    border-bottom: 2px dashed #555;
+    color: #fff; /* Ajuste para a cor padrão do seu tema */
+    font-size: 1.5em; /* Tamanho tradicional de h2 */
+    font-weight: bold;
+    width: 100%;
+    padding-bottom: 5px;
+    margin-bottom: 10px;
+    outline: none;
+    transition: border-color 0.3s;
+    font-family: inherit;
+}
+
+.timeline-title:focus {
+    border-bottom-color: #007acc; /* Cor de destaque ao clicar */
+}
+
+.timeline-title::placeholder {
+    color: #888;
+    font-weight: normal;
 }
