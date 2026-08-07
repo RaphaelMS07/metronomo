@@ -13,58 +13,19 @@
 
     <div class="app-container">
 
-        
-        <div class="sections-wrapper">
-            <div class="section">
-                <!-- Título editável no lugar do H2 -->
-                <input type="text" id="timelineTitle" class="timeline-title" value="Novo Treino" placeholder="Digite o nome do treino...">
-                <div class="controls-wrapper">
-                    <!-- Botão de Play foi movido daqui para baixo -->
-                    <div class="global-settings">
-                        <label for="globalBpm">BPM</label>
-                        <input type="number" id="globalBpm" value="120" min="40" max="240">
-        
-                        <span style="margin: 0 10px; color: #555;">|</span>
-        
-                        <label for="timelineLoop"><i class="fa-solid fa-repeat"
-                                title="Repetições da linha do tempo (0 = ∞)"></i></label>
-                        <input type="number" id="timelineLoop" value="1" min="0">
-                    </div>
-                </div>
-                
-                <!-- Novo wrapper para alinhar Play e Timeline lado a lado -->
-                <div class="timeline-wrapper">
-                    <div class="controls">
-                        <!-- Reduzi um pouco a largura caso ele tenha texto dentro quando tocar (■ Parar) -->
-                        <button id="playBtn" class="play-btn" style="height: 90px; min-width: 90px; border-radius: 60px;">▶</button>
-                    </div>
-                    
-                    <div id="timeline" class="timeline">
-                        <div class="config-box" draggable="true">
-                            <div class="form-group">
-                                <label>BPM:</label>
-                                <input type="number" class="bpm-input" value="120" min="40" max="240">
-                            </div>
-                            <div class="form-group">
-                                <label>Beats/tick:</label>
-                                <input type="number" class="beats-input" value="1" min="1" max="16">
-                            </div>
-                            <div class="form-group">
-                                <label><i class="fa-solid fa-infinity" title="Limite (0 = ∞)"></i></label>
-                                <input type="number" class="limit-input" value="4" min="0">
-                            </div>
-                        </div>
-
-                        <button id="addBlockBtn" class="add-btn">+</button>
-                    </div>
-                </div>
-            </div>
+        <!-- Container onde todos os treinos (cards) serão inseridos -->
+        <div id="trainingsContainer" class="sections-wrapper">
+            <!-- Os cards serão gerados pelo JavaScript aqui dentro -->
         </div>
 
-<!--         
+        <!-- Botão global para adicionar um novo Treino independente -->
+        <div style="text-align: center; margin: 30px 0;">
+            <button id="addTrainingBtn" class="add-btn" style="width: 70px; height: 70px; border-radius: 50%; font-size: 2rem; box-shadow: 0 4px 10px rgba(0,0,0,0.3);"><i class="fa-solid fa-plus"></i></button>
+        </div>
+        
         <footer>
             Created By Raphael, O Phoda
-        </footer> -->
+        </footer>
     </div>
 
     <script src="script.js"></script>
