@@ -64,6 +64,37 @@ h2 {
     transform: scale(0.98);
 }
 
+/* --- ESTILOS DOS BOTÕES DE IMPORTAR / EXPORTAR --- */
+.config-box-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1rem;
+    padding: 12px 20px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.05); /* Fundo levemente visível */
+    color: inherit;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    font-family: inherit;
+}
+
+.config-box-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    filter: brightness(1.2);
+}
+
+/* Cores simulando os tons pastéis dos seus cards */
+#exportBtn { 
+    border: 2px solid hsl(210, 60%, 70%); 
+}
+
+#importBtn { 
+    border: 2px solid hsl(120, 50%, 70%); 
+}
+/* ------------------------------------------------- */
+
 .global-settings {
     display: flex;
     align-items: center;

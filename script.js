@@ -21,7 +21,7 @@ let draggedElement = null;
 function saveToLocalStorage() {
     const data = [];
     const cards = document.querySelectorAll('.training-card');
-    
+
     // Varre todos os cards criados na tela e salva os dados de cada um
     cards.forEach(card => {
         const title = card.querySelector('.timeline-title').value;
@@ -48,9 +48,9 @@ function saveToLocalStorage() {
 function loadFromLocalStorage() {
     const container = document.getElementById('trainingsContainer');
     container.innerHTML = ''; // Limpa antes de carregar
-    
+
     const savedTrainings = localStorage.getItem('metronomeTrainings');
-    
+
     if (savedTrainings) {
         try {
             const data = JSON.parse(savedTrainings);
@@ -64,11 +64,11 @@ function loadFromLocalStorage() {
         if (oldData) {
             try {
                 container.appendChild(createTrainingDOM(JSON.parse(oldData)));
-            } catch (e) {}
+            } catch (e) { }
         } else {
             container.appendChild(createTrainingDOM({
-                title: 'Treino de Aquecimento', globalBpm: 120, loopLimit: 1, 
-                blocks: [{bpm: 120, beatsPerTick: 1, limit: 4, color: getRandomPastelColor()}]
+                title: 'Treino de Aquecimento', globalBpm: 120, loopLimit: 1,
+                blocks: [{ bpm: 120, beatsPerTick: 1, limit: 4, color: getRandomPastelColor() }]
             }));
         }
     }
@@ -79,7 +79,7 @@ function loadFromLocalStorage() {
 function createTrainingDOM(training) {
     const card = document.createElement('div');
     card.classList.add('section', 'training-card');
-    
+
     const title = training.title || "Novo Treino";
     const globalBpm = training.globalBpm || 120;
     const loopLimit = training.loopLimit !== undefined ? training.loopLimit : 1;
@@ -158,7 +158,7 @@ function getRandomPastelColor() {
 
 // --- DELEGAÇÃO DE EVENTOS (CLIQUE, DIGITAÇÃO E ARRASTE) ---
 document.addEventListener('click', (e) => {
-    
+
     // 1. Clicar no botão PLAY do card
     if (e.target.closest('.play-btn')) {
         const btn = e.target.closest('.play-btn');
@@ -196,8 +196,8 @@ document.addEventListener('click', (e) => {
     if (e.target.closest('#addTrainingBtn')) {
         const container = document.getElementById('trainingsContainer');
         container.appendChild(createTrainingDOM({
-            title: 'Novo Treino', globalBpm: 120, loopLimit: 1, 
-            blocks: [{bpm: 120, beatsPerTick: 1, limit: 4, color: getRandomPastelColor()}]
+            title: 'Novo Treino', globalBpm: 120, loopLimit: 1,
+            blocks: [{ bpm: 120, beatsPerTick: 1, limit: 4, color: getRandomPastelColor() }]
         }));
         saveToLocalStorage();
     }
@@ -219,7 +219,7 @@ document.addEventListener('input', (e) => {
         const bpmInputs = card.querySelectorAll('.bpm-input');
         bpmInputs.forEach(input => input.value = e.target.value);
         saveToLocalStorage();
-    } 
+    }
     else if (e.target.matches('.bpm-input, .beats-input, .limit-input, .timeline-loop, .timeline-title')) {
         saveToLocalStorage();
     }
@@ -248,17 +248,17 @@ document.addEventListener('dragend', (e) => {
 document.addEventListener('dragover', (e) => {
     if (draggedElement) {
         e.preventDefault();
-        
+
         // Permite mover o bloco entre TREINOS diferentes
         const hoverTimeline = e.target.closest('.timeline');
-        
+
         if (!hoverTimeline) {
             draggedElement.classList.add('delete-ready'); // Fora de uma timeline, marca para deletar
         } else {
             draggedElement.classList.remove('delete-ready');
             const afterElement = getDragAfterElement(hoverTimeline, e.clientX);
             const addBtn = hoverTimeline.querySelector('.add-block-btn');
-            
+
             if (afterElement == null || afterElement === addBtn) {
                 hoverTimeline.insertBefore(draggedElement, addBtn);
             } else {
@@ -306,7 +306,7 @@ function startMetronome(card) {
     currentBeatInTick = 0;
     timelinePlayCount = 0;
     timelineLoopLimit = parseInt(card.querySelector('.timeline-loop').value) || 0;
-    
+
     nextNoteTime = audioCtx.currentTime + 0.05;
 
     const playBtn = card.querySelector('.play-btn');
@@ -322,7 +322,7 @@ function stopMetronome() {
 
     if (playingCard) {
         const playBtn = playingCard.querySelector('.play-btn');
-        if(playBtn) {
+        if (playBtn) {
             playBtn.textContent = '▶';
             playBtn.style.backgroundColor = '#007acc';
         }
@@ -387,6 +387,81 @@ function scheduler() {
     }
     if (isRunning) timerID = setTimeout(scheduler, lookahead);
 }
+
+// --- LÓGICA DE IMPORTAÇÃO E EXPORTAÇÃO ---
+
+// Exportar: Lê do LocalStorage, cria um Blob JSON e força o download
+function exportData() {
+    const data = localStorage.getItem('metronomeTrainings');
+
+    if (!data || data === '[]') {
+        alert('Não há treinos salvos para exportar.');
+        return;
+    }
+
+    const blob = new Blob([data], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+    a.href = url;
+
+    // Cria um nome de arquivo com a data atual
+    const date = new Date().toISOString().slice(0, 10);
+    a.download = `backup_metronomo_${date}.json`;
+
+    document.body.appendChild(a);
+    a.click();
+
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
+
+// Importar: Lê o arquivo JSON, valida e salva no LocalStorage
+function importData(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function (e) {
+        try {
+            const importedData = JSON.parse(e.target.result);
+
+            // Validação simples para garantir que a estrutura seja um Array
+            if (Array.isArray(importedData)) {
+                // Sobrescreve o LocalStorage
+                localStorage.setItem('metronomeTrainings', JSON.stringify(importedData));
+
+                // Recarrega a interface com os novos dados
+                loadFromLocalStorage();
+                alert('Treinos importados com sucesso!');
+            } else {
+                alert('Arquivo inválido: o formato do backup não é reconhecido.');
+            }
+        } catch (error) {
+            alert('Erro ao ler o arquivo. Certifique-se de que é um arquivo .json válido.');
+        }
+
+        // Reseta o valor do input para permitir a importação do mesmo arquivo novamente se necessário
+        event.target.value = '';
+    };
+    reader.readAsText(file);
+}
+
+// Adiciona os ouvintes de evento de clique globalmente para os novos botões
+document.addEventListener('click', (e) => {
+    // Clique no botão de exportar
+    if (e.target.closest('#exportBtn')) {
+        exportData();
+    }
+
+    // Clique no botão de importar (finge um clique no input file escondido)
+    if (e.target.closest('#importBtn')) {
+        document.getElementById('importFile').click();
+    }
+});
+
+// Ouve a seleção de arquivo no input escondido
+document.getElementById('importFile').addEventListener('change', importData);
 
 // Inicia chamando o load da página
 loadFromLocalStorage();

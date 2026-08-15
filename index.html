@@ -10,8 +10,20 @@
 </head>
 
 <body>
+    <!-- Botões de Importar/Exportar -->
 
     <div class="app-container">
+        <div style="display: flex; justify-content: flex-end; gap: 10px; margin-bottom: 20px; padding: 0 15px;">
+            <button id="exportBtn" class="add-btn"
+                style="font-size: 0.9rem; padding: 8px 15px; border-radius: 8px; height: 40px; color: rgb(194, 192, 192);">
+                <i class="fa-solid fa-download"></i> Exportar
+            </button>
+            <button id="importBtn" class="add-btn"
+                style="font-size: 0.9rem; padding: 8px 15px; border-radius: 8px; height: 40px; color: rgb(194, 192, 192);">
+                <i class="fa-solid fa-upload"></i> Importar
+            </button>
+            <input type="file" id="importFile" accept=".json" style="display: none;">
+        </div>
 
         <!-- Container onde todos os treinos (cards) serão inseridos -->
         <div id="trainingsContainer" class="sections-wrapper">
@@ -20,9 +32,11 @@
 
         <!-- Botão global para adicionar um novo Treino independente -->
         <div style="text-align: center; margin: 30px 0;">
-            <button id="addTrainingBtn" class="add-btn" style="width: 70px; height: 70px; border-radius: 50%; font-size: 2rem; box-shadow: 0 4px 10px rgba(0,0,0,0.3);"><i class="fa-solid fa-plus"></i></button>
+            <button id="addTrainingBtn" class="add-btn"
+                style="width: 70px; height: 70px; border-radius: 50%; font-size: 2rem; box-shadow: 0 4px 10px rgba(0,0,0,0.3);"><i
+                    class="fa-solid fa-plus"></i></button>
         </div>
-        
+
         <footer>
             Created By Raphael, O Phoda
         </footer>
