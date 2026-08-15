@@ -129,6 +129,7 @@ function createConfigBox(defaultBpm = 120, defaultBeats = 1, defaultLimit = 4, s
 
     const boxColor = savedColor || getRandomPastelColor();
     box.style.borderColor = boxColor;
+    box.style.setProperty('--box-color', boxColor);
     box.dataset.color = boxColor;
 
     box.innerHTML = `
@@ -146,6 +147,18 @@ function createConfigBox(defaultBpm = 120, defaultBeats = 1, defaultLimit = 4, s
         </div>
     `;
     return box;
+}
+
+function highlightActiveBox(card, index) {
+    if (!card) return;
+    const boxes = card.querySelectorAll('.config-box');
+    boxes.forEach((box, i) => {
+        if (i === index) {
+            box.classList.add('active-playing');
+        } else {
+            box.classList.remove('active-playing');
+        }
+    });
 }
 
 function getRandomPastelColor() {
@@ -313,6 +326,8 @@ function startMetronome(card) {
     playBtn.textContent = '■';
     playBtn.style.backgroundColor = '#cc0000';
 
+    highlightActiveBox(playingCard, currentBlockIdx); // NOVA LINHA
+
     scheduler();
 }
 
@@ -326,6 +341,7 @@ function stopMetronome() {
             playBtn.textContent = '▶';
             playBtn.style.backgroundColor = '#007acc';
         }
+        highlightActiveBox(playingCard, -1);
         playingCard = null;
     }
 }
@@ -370,10 +386,12 @@ function nextNote() {
                 timelinePlayCount++;
                 if (timelineLoopLimit > 0 && timelinePlayCount >= timelineLoopLimit) {
                     stopMetronome();
+                    return; // NOVA LINHA: Adicione este return
                 } else {
                     currentBlockIdx = 0;
                 }
             }
+            highlightActiveBox(playingCard, currentBlockIdx);
         }
     }
 }
